@@ -35,11 +35,11 @@ export default function Members( {navigation} ){
                         <Text style = {styles.title}>
                             MEMBROS
                         </Text>
-                        <MemberBox name = 'Bruna' numMatricula={111111111}/>
-                        <MemberBox name = 'Gabriela' numMatricula={111111111}/>
-                        <MemberBox name = 'Pedro' numMatricula={111111111}/>
+                        <MemberBox name = 'Bruna Ferreira Mello Reis' numMatricula={111111111}/>
+                        <MemberBox name = 'Gabrielaaaaaaaaaaaaaaaaaaaaaaaaa' numMatricula={111111111}/>
+                        <MemberBox name = 'Pedro Militao Mello Reis' numMatricula={111111111}/>
                         <MemberBox name = 'João' numMatricula={111111111}/>
-                        <MemberBox />
+                        <MemberBox name = 'papblot' numMatricula={111111111} />
                         <MemberBox />
                     </ScrollView>
                 </View>

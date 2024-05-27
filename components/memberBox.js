@@ -10,8 +10,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 const images = '@/assets/images';
 
-let deviceWidth = Dimensions.get('window').width;
-let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = (Dimensions.get('window').width);
+let deviceHeight = (Dimensions.get('window').height);
 let rotateIcon = true;
 
 const defaultName = 'Anônimo';
@@ -27,7 +27,6 @@ export default function MemberBox({name, numMatricula}){
     let rotated = false;
 
     const iconPressed = () => {
-
         Animated.timing(rotateAnimation, {
             toValue: !rotated ? 1 : 0,
             duration: 500,
@@ -51,15 +50,15 @@ export default function MemberBox({name, numMatricula}){
     };
 
     return(
-        <View style = {styles.memberBoxContainer}>
-            <ImageBackground style = {styles.memberBox} imageStyle={{resizeMode: 'contain'}} source={require(`${images}/memberBox.png`)}>
+        <Animated.View style = {styles.memberBox}>
+            <View style = {styles.nonCollapsedContainer}>
                 <View style = {styles.mBoxImgContainer}>
                     <Image 
                         source={require(`${images}/react-logo.png`)}
                         style = {styles.mBoxImg}
                     />
                 </View>
-                <Text style = {styles.mBoxName}>
+                <Text style = {styles.mBoxName} numberOfLines={1}>
                     {memberName}
                 </Text>
                 <TouchableOpacity 
@@ -69,66 +68,176 @@ export default function MemberBox({name, numMatricula}){
                         <MaterialCommunityIcons
                             name="chevron-right" 
                             style={styles.chevronIcon} 
-                            size={50} 
+                            size={deviceWidth*0.12} 
                         />
                     </Animated.View>
-
                 </TouchableOpacity>
-                
-            </ImageBackground>
-            <Text style = {styles.mBoxMatricula}>
-                {memberMatricula}
-            </Text>
-        </View>
+            </View>
+            <Animated.View style = {styles.collapsedContainer}>
+                <View style = {styles.collapsedRow}>
+                    <Text style = {styles.collapsedAtributte}>
+                        Nome:
+                    </Text>
+                    <Text style = {styles.collapsedFullName}>
+                        Bruna Ferreira Mello Reis
+                    </Text>
+                    <TouchableOpacity 
+                        style={styles.editContainerTouchable}>
+                        <MaterialCommunityIcons
+                                name="pencil-outline" 
+                                style={styles.editIcon} 
+                                size={deviceWidth*0.05} 
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style = {styles.collapsedEmailRow}>
+                    <View style = {styles.collapsedRow}>
+                        <Text style = {styles.collapsedAtributte}>
+                            Email:
+                        </Text>
+                        <Text style = {styles.collapsedFullName}>
+                            bruninhalinda07@gmail.com
+                        </Text>
+                        <TouchableOpacity 
+                            style={styles.editContainerTouchable}>
+                            <MaterialCommunityIcons
+                                    name="pencil-outline" 
+                                    style={styles.editIcon} 
+                                    size={deviceWidth*0.05} 
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style = {styles.collapsedLastRow}>
+                    <View style = {styles.collapsedRow}>
+                        <View style = {styles.collapsedAgeRow}>
+                            <Text style = {styles.collapsedAtributte}>
+                                Idade:
+                            </Text>
+                            <Text style = {styles.collapsedFullName} marginLeft = '10%'>
+                                28
+                            </Text>
+                            <TouchableOpacity 
+                                style={styles.editContainerTouchable}>
+                                <MaterialCommunityIcons
+                                        name="pencil-outline" 
+                                        style={styles.editIcon} 
+                                        size={deviceWidth*0.05} 
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style = {styles.collapsedAgeRow}>
+                            <Text style = {styles.collapsedAtributte}>
+                                Matrícula:
+                            </Text>
+                            <Text style = {styles.collapsedFullName} marginLeft = '8%'>
+                                202310623
+                            </Text>
+                            <TouchableOpacity 
+                                style={styles.editContainerTouchable}>
+                                <MaterialCommunityIcons
+                                        name="pencil-outline" 
+                                        style={styles.editIcon} 
+                                        size={deviceWidth*0.05} 
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+                <TouchableOpacity 
+                    style={styles.btnDelete}>
+                    <Text style = {styles.btnText}>
+                        Excluir Perfil
+                    </Text>
+                </TouchableOpacity>
+            </Animated.View>
+        </Animated.View>
     );
 }
 
 const styles = StyleSheet.create({
-    memberBoxContainer: {
-        height: deviceHeight/6,
+    memberBox: {
+        height: deviceHeight/3, // Animar 6 -> 3
         width: deviceWidth*0.8,
+        flexDirection: 'collumn',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'green'
+        marginVertical: deviceHeight/50,
+        backgroundColor: Colors.white,
+        borderWidth: 3,
+        borderColor: Colors.darkBlue,
+        borderRadius: 20,
+        padding: '2%'
     },
-    memberBox: {
-        flexDirection: 'row',
+    nonCollapsedContainer: {
+        height: '40%', // Tenq ser animado 100% -> 40%
         width: '100%',
-        height: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
     },
     mBoxImgContainer: {
-        height: '58.50%',
-        width: '25.55%',
-        marginLeft: '4%',
-        marginTop: '7%',
-        borderRadius: 20
+        borderRadius: 20,
+        marginHorizontal: '1%'
     },
     mBoxImg: {
+        aspectRatio: 1,
         resizeMode: 'contain',
     },
     mBoxName: {
-        marginVertical: '14.6%',
-        width: '45%',
-        height: '20%',
         color: Colors.darkBlue,
         fontSize: deviceWidth*0.07,
         fontWeight: '600',
-        marginLeft: '5%',
-    },
-    chevronContainerTouchable: {
-        height: '31%',
-        marginTop: '100%',
+        width: '45%',
     },
     chevronIcon: {
+        aspectRatio: 1,
         color: Colors.darkBlue,
     },
-    mBoxMatricula: {
-        width: '20.5%',
-        marginTop: '-10%',
-        marginRight: '7.6%',
-        alignSelf: 'flex-end',
+    collapsedContainer: {
+        height: '60%', // Animar 0% -> 60%
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+    },
+    collapsedRow: {
+        width: '100%',
+        paddingHorizontal: '5%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    collapsedAtributte: {
         color: Colors.darkBlue,
-        fontWeight: '600',
-        fontSize: deviceWidth*0.035,
+        fontWeight: 'bold',
+        fontSize: deviceWidth*0.0375
+    },
+    editIcon: {
+        aspectRatio: 1,
+        color: Colors.darkBlue,
+    },
+    collapsedFullName: {
+        color: Colors.darkBlue,
+        fontSize: deviceWidth*0.0375,
+        marginRight: 'auto',
+        marginLeft: '4%'
+    },
+    collapsedAgeRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    btnDelete: {
+        backgroundColor: '#FAAAAA',
+        borderRadius: 40,
+        paddingHorizontal: '5%',
+        paddingVertical: '0.5%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 'auto'
+    },
+    btnText: {
+        color: Colors.darkBlue,
+        fontSize: deviceWidth*0.0375,
+        fontWeight: '500'
     }
 });
