@@ -12,9 +12,10 @@ import { useForm, Controller } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
-
+import Collapsible from 'react-native-collapsible';
 import Header from '@/components/header';
-import MemberBox from '@/components/memberBox';
+import MemberBox1 from '@/components/memberBox';
+import TesteMembers from './testeMembers';
 
 const images = '@/assets/images';
 
@@ -24,23 +25,28 @@ let deviceHeight = Dimensions.get('window').height;
 let memberName = 'Bruna';
 let memberMatricula = '202310533';
 
+
+
 export default function Members( {navigation} ){
     return(
         <>
             <StatusBar translucent backgroundColor={'#A2ADB2'}/>
             <ImageBackground style = {styles.backgroundImg} source={require(`${images}/lightBackgroundComp.png`)}>
+                <Header />
                 <View style = {styles.screenView}>
-                    <Header />
                     <ScrollView contentContainerStyle = {styles.membrosContainer}>
                         <Text style = {styles.title}>
                             MEMBROS
                         </Text>
-                        <MemberBox name = 'Bruna Ferreira Mello Reis' numMatricula={111111111}/>
-                        <MemberBox name = 'Gabrielaaaaaaaaaaaaaaaaaaaaaaaaa' numMatricula={111111111}/>
-                        <MemberBox name = 'Pedro Militao Mello Reis' numMatricula={111111111}/>
-                        <MemberBox name = 'João' numMatricula={111111111}/>
-                        <MemberBox name = 'papblot' numMatricula={111111111} />
-                        <MemberBox />
+                        <TesteMembers/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
+                        <TesteMembers name = "Gabrielaaaaaaaaaaaaaa"/>
                     </ScrollView>
                 </View>
             </ImageBackground>
@@ -53,61 +59,16 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     screenView: {
-        flex: 1,
+        height: deviceHeight - (deviceHeight/9)
     },
     membrosContainer: {
-        flexGrow: 1,
-        justifyContent: 'space-evenly',
-        alignItems: 'center'
+        justifyContent: 'space-around',
+        alignItems: 'center',
     }, 
     title: {
         color: Colors.darkBlue,
         fontSize: deviceWidth*0.08,
         fontWeight: '600',
-        padding: '5%',
+        padding: '5%'
     },
-    memberBoxContainer: {
-        height: deviceHeight/6,
-        width: deviceWidth*0.8,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    memberBox: {
-        flexDirection: 'row',
-        width: '100%',
-        height: '100%'
-    },
-    mBoxImgContainer: {
-        height: '58.50%',
-        width: '25.55%',
-        marginLeft: '4%',
-        marginTop: '7%',
-        borderRadius: 20
-    },
-    mBoxImg: {
-        resizeMode: 'contain',
-        aspectRatio: 1
-    },
-    mBoxName: {
-        marginVertical: '14.6%',
-        width: '45%',
-        height: '20%',
-        color: Colors.darkBlue,
-        fontSize: deviceWidth*0.07,
-        fontWeight: '600',
-        marginLeft: '5%',
-    },
-    chevronIcon: {
-        marginRight: '10%',
-        marginTop: '13.4%',
-    },
-    mBoxMatricula: {
-        width: '20.5%',
-        marginTop: '-10%',
-        marginRight: '7.6%',
-        alignSelf: 'flex-end',
-        color: Colors.darkBlue,
-        fontWeight: '600',
-        fontSize: deviceWidth*0.035,
-    }
 });

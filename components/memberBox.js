@@ -8,6 +8,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+import Collapsible from 'react-native-collapsible';
+
 const images = '@/assets/images';
 
 let deviceWidth = (Dimensions.get('window').width);
@@ -23,17 +25,17 @@ export default function MemberBox({name, numMatricula}){
     numMatricula != null ? memberMatricula = numMatricula : memberMatricula = defaultMatricula;
 
     const [rotateAnimation, setRotateAnimation] = useState(new Animated.Value(0));
-
-    let rotated = false;
+    const [rotated, setRotated] = useState(false);
 
     const iconPressed = () => {
+
         Animated.timing(rotateAnimation, {
             toValue: !rotated ? 1 : 0,
             duration: 500,
             useNativeDriver: true,
         }).start();
 
-        rotated = !rotated;
+        setRotated(!rotated);
     };
 
     const interpolateRotating = rotateAnimation.interpolate({
@@ -48,16 +50,13 @@ export default function MemberBox({name, numMatricula}){
           },
         ],
     };
-
     return(
         <Animated.View style = {styles.memberBox}>
             <View style = {styles.nonCollapsedContainer}>
-                <View style = {styles.mBoxImgContainer}>
-                    <Image 
-                        source={require(`${images}/react-logo.png`)}
-                        style = {styles.mBoxImg}
-                    />
-                </View>
+                <Image 
+                    source={require(`${images}/react-logo.png`)}
+                    style = {styles.mBoxImg}
+                />
                 <Text style = {styles.mBoxName} numberOfLines={1}>
                     {memberName}
                 </Text>
@@ -157,7 +156,7 @@ export default function MemberBox({name, numMatricula}){
 
 const styles = StyleSheet.create({
     memberBox: {
-        height: deviceHeight/3, // Animar 6 -> 3
+        flex: 0,
         width: deviceWidth*0.8,
         flexDirection: 'collumn',
         justifyContent: 'center',
@@ -170,7 +169,7 @@ const styles = StyleSheet.create({
         padding: '2%'
     },
     nonCollapsedContainer: {
-        height: '40%', // Tenq ser animado 100% -> 40%
+        height: '100%', // Tenq ser animado 100% -> 40%
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-around',
