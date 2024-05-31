@@ -2,6 +2,8 @@ import { Colors } from "@/constants/Colors";
 
 import React from "react";
 import { View, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { FIREBASE_AUTH } from "@/FirebaseConfig";
+import { signOut } from "firebase/auth";
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -12,7 +14,22 @@ let deviceWidth = Dimensions.get('window').width;
 let deviceHeight = Dimensions.get('window').height;
 let headerFixed = false;
 
-export default function Header(){
+
+export default function Header( {navigation} ){
+    const auth = FIREBASE_AUTH;
+
+    function logout(){
+        signOut(auth)
+            .then(() => {
+                alert('Você foi deslogado');
+                navigation.navigate('Login');
+            })
+            .catch((error) => {
+                const errorMessage = error.errorMessage;
+                alert(errorMessage);
+            });
+    }
+
     return(
         <View style={styles.header}>
             <View style={styles.imageContainer}>
@@ -21,8 +38,8 @@ export default function Header(){
                     style = {styles.imageStyle}
                 />
             </View>
-            <TouchableOpacity>
-                <MaterialCommunityIcons name="account" style={styles.icon} size={55} />
+            <TouchableOpacity onPress={logout} title = "Sign Out">
+                <MaterialCommunityIcons name="logout" style={styles.icon} size={55} />
             </TouchableOpacity>
         </View>
     );

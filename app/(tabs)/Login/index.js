@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
@@ -10,6 +10,8 @@ import { useForm, Controller } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
+import { FIREBASE_AUTH } from "@/FirebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 let deviceWidth = Dimensions.get('window').width;
 let deviceHeight = Dimensions.get('window').height;
@@ -22,15 +24,28 @@ const schema = yup.object({
 })
 
 export default function Login( {navigation} ){
+
+    const [loading, setLoading] = useState(false);
+    const auth = FIREBASE_AUTH;
+
+    const [showSenha, setShowSenha] = useState(false);
+    // const secureTextEntryBool = true;
+
     const { control, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(schema)
     });
 
-    function handleSignIn(data){
-        console.log(data);
+    const handleSignIn = async(data) => {
+        signInWithEmailAndPassword(auth, data.email, data.senha)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            navigation.navigate('Members')
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage);
+        })
     }
-
-    const secureTextEntryBool = true;
 
     return(
         <View style={styles.backgroundContainer}>
@@ -54,11 +69,16 @@ export default function Login( {navigation} ){
                             name="email"
                             render={({field:{onChange, value}}) => (
                                 <TextInput 
-                                    autoCapitalize="false"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    autoComplete="email"
                                     onChangeText={onChange}
                                     value={value}
                                     style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.email? '#faa6a0' : Colors.gray}}} 
+                                    theme={{colors: 
+                                        { 
+                                            onSurfaceVariant: errors.email? '#faa6a0' : Colors.gray
+                                        }}} 
                                     activeUnderlineColor = {
                                         errors.email ? 'red' : Colors.lightBlue
                                     } 
@@ -77,12 +97,15 @@ export default function Login( {navigation} ){
                             name="senha"
                             render={({field:{onChange, value}}) => (
                                 <TextInput 
-                                    autoCapitalize="false"
+                                    autoCapitalize="none"
                                     onChangeText={onChange}
                                     value={value}
-                                    secureTextEntry = {secureTextEntryBool}
-                                    style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.senha? '#faa6a0' : Colors.gray}}}  
+                                    secureTextEntry = {true}
+                                    style = {styles.textInput}
+                                    theme={{colors: 
+                                        { 
+                                            onSurfaceVariant: errors.senha? '#faa6a0' : Colors.gray
+                                        }}}  
                                     activeUnderlineColor = {
                                         errors.senha ? 'red' : Colors.lightBlue
                                     } 
@@ -95,7 +118,7 @@ export default function Login( {navigation} ){
                         />
                         {errors.senha && <Text style = {styles.errorMsg}>{errors.senha?.message}</Text>}
                     </View>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('ForgotPass')}>
                         <Text style={styles.textForgot}>
                             Esqueci minha senha
                         </Text>
@@ -142,6 +165,11 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     },
     formContainer: {
+        shadowColor: Colors.white,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 15,
+        elevation: 10, 
         backgroundColor: Colors.white,
         marginHorizontal: deviceWidth/8,
         height: deviceHeight/2,

@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 
-import React from "react";
+import React, { useState }  from "react";
 import { View, Text, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
@@ -17,21 +17,25 @@ let deviceHeight = Dimensions.get('window').height;
 const images = '@/assets/images';
 
 const schema = yup.object({
-    email: yup.string().email("Email invalido").required("Informe seu email"),
-    senha: yup.string().required("Informe sua senha"),
-    confirmSenha: yup.string().oneOf([yup.ref('senha'), null], "As senhas não são iguais").required("Confirme sua senha")
-});
+    nome: yup.string().required("Informe seu nome"),
+    idade: yup.string().required("Informe sua idade"),
+    numMatricula: yup.string().required("Informe seu número de matrícula")
+})
 
-export default function SignUp2( {navigation} ){
+export default function FormCad2( {navigation} ){
+
+    const [userNome, setUserNome] = useState('');
+    const [userIdade, setUserIdade] = useState('');
+    const [userNumMatricula, setUserNumMatricula] = useState('');
+
     const { control, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(schema)
     });
 
-    function handleSignIn(data){
+    function handleSignUp(data){
         console.log(data);
+        navigation.navigate('FormCad2');
     }
-
-    const secureTextEntryBool = true;
 
     return(
         <View style={styles.backgroundContainer}>
@@ -52,82 +56,101 @@ export default function SignUp2( {navigation} ){
                     <View style = {styles.controllerView}>
                         <Controller
                             control={control}
-                            name="email"
+                            name="nome"
                             render={({field:{onChange, value}}) => (
                                 <TextInput
                                     onChangeText={onChange}
                                     value={value}
                                     style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.email? '#faa6a0' : Colors.gray}}} 
+                                    theme={{colors: { onSurfaceVariant: errors.nome? '#faa6a0' : Colors.gray}}} 
                                     activeUnderlineColor = {
-                                        errors.email ? 'red' : Colors.lightBlue
+                                        errors.nome ? 'red' : Colors.lightBlue
                                     } 
                                     underlineColor = {
-                                        errors.email ? 'red' : Colors.gray
+                                        errors.nome ? 'red' : Colors.gray
                                     }  
-                                    label="Email" 
+                                    label="Nome" 
+                                />
+                            )}
+                        />
+                        {errors.nome && <Text style = {styles.errorMsg}>{errors.nome?.message}</Text>}
+                    </View>
+                    <View style = {styles.controllerView}>
+                        <Controller
+                            control={control}
+                            name="idade"
+                            render={({field:{onChange, value}}) => (
+                                <TextInput
+                                    keyboardType="numeric"
+                                    autoCapitalize="false"
+                                    onChangeText={onChange}
+                                    value={value}
+                                    style = {styles.textInput} 
+                                    theme={{colors: { onSurfaceVariant: errors.idade? '#faa6a0' : Colors.gray}}}  
+                                    activeUnderlineColor = {
+                                        errors.idade ? 'red' : Colors.lightBlue
+                                    } 
+                                    underlineColor = {
+                                        errors.idade ? 'red' : Colors.gray
+                                    }  
+                                    label="Idade" 
+                                />
+                            )}
+                        />
+                        {errors.idade && <Text style = {styles.errorMsg}>{errors.idade?.message}</Text>}
+                    </View>
+                    <View style = {styles.controllerView}>
+                        <Controller
+                            control={control}
+                            name="numMatricula"
+                            render={({field:{onChange, value}}) => (
+                                <TextInput
+                                    keyboardType="numeric"
+                                    onChangeText={onChange}
+                                    value={value}
+                                    style = {styles.textInput} 
+                                    theme={{colors: { onSurfaceVariant: errors.numMatricula? '#faa6a0' : Colors.gray}}} 
+                                    activeUnderlineColor = {
+                                        errors.numMatricula ? 'red' : Colors.lightBlue
+                                    } 
+                                    underlineColor = {
+                                        errors.numMatricula ? 'red' : Colors.gray
+                                    }  
+                                    label="Nº de matrícula" 
+                                />
+                            )}
+                        />
+                        {errors.numMatricula && <Text style = {styles.errorMsg}>{errors.numMatricula?.message}</Text>}
+                    </View>
+                    <View style = {styles.controllerView}>
+                        <Controller
+                            control={control}
+                            name="img"
+                            render={({field:{onChange, value}}) => (
+                                <TextInput 
+                                    mode="outlined"
+                                    backgroundColor = {Colors.darkBlue}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    style = {styles.textInput} 
+                                    theme={{colors: { onSurfaceVariant: errors.email? '#faa6a0' : Colors.gray}}} 
+                                    label="imagem" 
                                 />
                             )}
                         />
                         {errors.email && <Text style = {styles.errorMsg}>{errors.email?.message}</Text>}
                     </View>
-                    <View style = {styles.controllerView}>
-                        <Controller
-                            control={control}
-                            name="senha"
-                            render={({field:{onChange, value}}) => (
-                                <TextInput
-                                    autoCapitalize="false"
-                                    onChangeText={onChange}
-                                    value={value}
-                                    secureTextEntry = {secureTextEntryBool}
-                                    style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.senha? '#faa6a0' : Colors.gray}}}  
-                                    activeUnderlineColor = {
-                                        errors.senha ? 'red' : Colors.lightBlue
-                                    } 
-                                    underlineColor = {
-                                        errors.senha ? 'red' : Colors.gray
-                                    }  
-                                    label="Senha" 
-                                />
-                            )}
-                        />
-                        {errors.senha && <Text style = {styles.errorMsg}>{errors.senha?.message}</Text>}
-                    </View>
-                    <View style = {styles.controllerView}>
-                        <Controller
-                            control={control}
-                            name="confirmSenha"
-                            render={({field:{onChange, value}}) => (
-                                <TextInput
-                                    onChangeText={onChange}
-                                    value={value}
-                                    style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.confirmSenha? '#faa6a0' : Colors.gray}}} 
-                                    activeUnderlineColor = {
-                                        errors.confirmSenha ? 'red' : Colors.lightBlue
-                                    } 
-                                    underlineColor = {
-                                        errors.confirmSenha ? 'red' : Colors.gray
-                                    }  
-                                    label="Confirmar senha" 
-                                />
-                            )}
-                        />
-                        {errors.confirmSenha && <Text style = {styles.errorMsg}>{errors.confirmSenha?.message}</Text>}
-                    </View>
                 </View>
                 <View style={styles.btnContainer}>
-                    <TouchableOpacity style={styles.btn} onPress={handleSubmit(handleSignIn)}>
+                    <TouchableOpacity style={styles.btn} onPress={handleSubmit(handleSignUp)}>
                         <Text style={styles.btnText}>
-                            Cadastrar
+                            Próximo
                         </Text>
                     </TouchableOpacity>
                 </View>
             </View>
             <View style = {styles.imgContainer}>
-                <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Image 
                         source={require(`${images}/backArrow.png`)}
                         style = {styles.arrowStyle}

@@ -11,7 +11,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 let deviceWidth = Dimensions.get('window').width;
 let deviceHeight = Dimensions.get('window').height;
@@ -22,15 +24,9 @@ const schema = yup.object({
     email: yup.string()
         .email("Email invalido")
         .required("Informe seu email"),
-    senha: yup.string()
-        .test('len', "A senha deve ter mais de 6 caracteres", val => val.length > 6)
-        .required("Informe sua senha"),
-    confirmSenha: yup.string()
-        .oneOf([yup.ref('senha'), null], "As senhas não são iguais")
-        .required("Confirme sua senha")
 });
 
-export default function SignUp( {navigation} ){
+export default function ForgetPass( {navigation} ){
 
     const auth = FIREBASE_AUTH;
 
@@ -39,12 +35,14 @@ export default function SignUp( {navigation} ){
     });
 
     function handleSignIn(data){
-        createUserWithEmailAndPassword(auth, data.email, data.senha, data.confirmSenha)
-        .then((UserCredential) => {
-            const user = UserCredential.user;
-            alert("Usuário registrado com sucesso");
-            navigation.navigate('Login');
+        sendPasswordResetEmail(auth, data.email)
+        .then(() => {
+            alert(`Foi enviado um email para ${data.email}. Verifique sua caixa e-mail`);
         })
+        .catch((error) => {
+            const errorMessage = error.message;
+            alert(`Alguma coisa não ocorreu como esperado. ${errorMessage}. Tente novamente ou volte a página de Login`);
+        });
     }
 
     const secureTextEntryBool = true;
@@ -59,9 +57,20 @@ export default function SignUp( {navigation} ){
                 />
             </View>
             <View style={styles.formContainer}>
+                <TouchableOpacity 
+                    style={styles.iconContainer}>
+                    <MaterialCommunityIcons
+                            name="lock-reset" 
+                            style={styles.lockIcon} 
+                            size={deviceHeight*0.18} 
+                    />
+                </TouchableOpacity>
                 <View style={styles.titleContainer}>
-                    <Text style={styles.title}>
-                        Cadastre-se
+                    <Text style={styles.title} numberOfLines={2}>
+                        Esqueci minha senha
+                    </Text>
+                    <Text style={styles.subTitle}>
+                        Digite seu e-mail e enviaremos um link para que você possa redefinir sua senha
                     </Text>
                 </View>
                 <View style={styles.inputsContainers}>
@@ -71,6 +80,7 @@ export default function SignUp( {navigation} ){
                             name="email"
                             render={({field:{onChange, value}}) => (
                                 <TextInput
+                                    keyboardType="email-address"
                                     onChangeText={onChange}
                                     autoCapitalize="none"
                                     value={value}
@@ -82,64 +92,17 @@ export default function SignUp( {navigation} ){
                                     underlineColor = {
                                         errors.email ? 'red' : Colors.gray
                                     }  
-                                    label="Email" 
+                                    label="Digite o e-mail cadastrado" 
                                 />
                             )}
                         />
                         {errors.email && <Text style = {styles.errorMsg}>{errors.email?.message}</Text>}
                     </View>
-                    <View style = {styles.controllerView}>
-                        <Controller
-                            control={control}
-                            name="senha"
-                            render={({field:{onChange, value}}) => (
-                                <TextInput
-                                    autoCapitalize="none"
-                                    onChangeText={onChange}
-                                    value={value}
-                                    secureTextEntry = {secureTextEntryBool}
-                                    style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.senha? '#faa6a0' : Colors.gray}}}  
-                                    activeUnderlineColor = {
-                                        errors.senha ? 'red' : Colors.lightBlue
-                                    } 
-                                    underlineColor = {
-                                        errors.senha ? 'red' : Colors.gray
-                                    }  
-                                    label="Senha" 
-                                />
-                            )}
-                        />
-                        {errors.senha && <Text style = {styles.errorMsg}>{errors.senha?.message}</Text>}
-                    </View>
-                    <View style = {styles.controllerView}>
-                        <Controller
-                            control={control}
-                            name="confirmSenha"
-                            render={({field:{onChange, value}}) => (
-                                <TextInput
-                                    autoCapitalize="none"
-                                    onChangeText={onChange}
-                                    value={value}
-                                    style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.confirmSenha? '#faa6a0' : Colors.gray}}} 
-                                    activeUnderlineColor = {
-                                        errors.confirmSenha ? 'red' : Colors.lightBlue
-                                    } 
-                                    underlineColor = {
-                                        errors.confirmSenha ? 'red' : Colors.gray
-                                    }  
-                                    label="Confirmar senha" 
-                                />
-                            )}
-                        />
-                        {errors.confirmSenha && <Text style = {styles.errorMsg}>{errors.confirmSenha?.message}</Text>}
-                    </View>
                 </View>
                 <View style={styles.btnContainer}>
                     <TouchableOpacity style={styles.btn} onPress={handleSubmit(handleSignIn)}>
                         <Text style={styles.btnText}>
-                            Cadastrar
+                            Enviar
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -184,23 +147,39 @@ const styles = StyleSheet.create({
         elevation: 10, 
         backgroundColor: Colors.white,
         marginHorizontal: deviceWidth/8,
-        height: deviceHeight/1.7,
-        borderRadius: 15
+        height: deviceHeight/2,
+        borderRadius: 15,
+        flexDirection:'column',
+        justifyContent: 'space-evenly',
+        alignItems: 'center'
+    },
+    iconContainer: {
+        backgroundColor: 'transparent'
+    },
+    lockIcon: {
+        color: Colors.darkBlue
     },
     titleContainer: {
         justifyContent: 'flex-end',
         alignItems: 'center',
-        height: '19%'
+        width: '80%'
     },
     title: {
         color: Colors.darkBlue,
-        fontSize: deviceWidth*0.08,
+        fontSize: deviceWidth*0.07,
         fontWeight: '400',
+        textAlign: 'center',
+    },
+    subTitle: {
+        marginTop: '3%',
+        textAlign: 'center',
+        color: Colors.gray,
+        fontWeight: '500',
     },
     inputsContainers: {
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        height: '60%'
+        width: '100%'
     },
     controllerView: {
         width: '80%',
@@ -222,21 +201,18 @@ const styles = StyleSheet.create({
         color: Colors.white,
         fontSize: deviceWidth*0.07,
         fontWeight: '400',
-        paddingVertical: deviceWidth*0.03
+        paddingVertical: deviceWidth*0.03,
     },
     btnContainer: {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        height: '16%'
+        width: '100%'
     },
     errorMsg: {
         marginTop: '1%',
         width: '90%',
         alignSelf: 'center',
         color: '#f25a4e',
-    },
-    arrowContainer: {
-        backgroundColor: 'red',
     },
     imgContainer: {
         justifyContent: 'center',

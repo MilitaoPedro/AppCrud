@@ -1,200 +1,197 @@
 import { Colors } from "@/constants/Colors";
 
 import React, { useState } from "react";
-import { ImageBackground, View, Text, Dimensions, StyleSheet, Animated,  Image } from 'react-native';
+import { 
+    View, 
+    Text, 
+    Dimensions, 
+    StyleSheet, 
+    Image, 
+    TouchableOpacity 
+} from 'react-native';
+
+import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
 
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { TouchableOpacity } from "react-native-gesture-handler";
-
-import Collapsible from 'react-native-collapsible';
-
 const images = '@/assets/images';
 
-let deviceWidth = (Dimensions.get('window').width);
-let deviceHeight = (Dimensions.get('window').height);
-let rotateIcon = true;
+let deviceWidth = Dimensions.get('window').width;
+let deviceHeight = Dimensions.get('window').height;
 
 const defaultName = 'Anônimo';
 const defaultMatricula = '000000000'
 
-export default function MemberBox({name, numMatricula}){
+export default function MemberBox( { name, numMatricula} ){
 
     name != null ? memberName = name : memberName = defaultName;
     numMatricula != null ? memberMatricula = numMatricula : memberMatricula = defaultMatricula;
 
-    const [rotateAnimation, setRotateAnimation] = useState(new Animated.Value(0));
-    const [rotated, setRotated] = useState(false);
+    const [expanded, setExpanded] = useState(false);
 
-    const iconPressed = () => {
-
-        Animated.timing(rotateAnimation, {
-            toValue: !rotated ? 1 : 0,
-            duration: 500,
-            useNativeDriver: true,
-        }).start();
-
-        setRotated(!rotated);
+    const onItemPress = () => {
+        setExpanded(!expanded);
     };
 
-    const interpolateRotating = rotateAnimation.interpolate({
-        inputRange: [0, 1],
-        outputRange: ["0deg", "90deg"],
-    });
+    const animatedStyleRotation = useAnimatedStyle(() => {
+        const rotation = expanded ? withTiming('90deg') : withTiming('0deg');
+        return {
+            transform:[
+                {
+                    rotate: rotation
+                }
+            ]
+        }
+    })
 
-    const animatedStyle = {
-        transform: [
-          {
-            rotate: interpolateRotating,
-          },
-        ],
-    };
-    return(
-        <Animated.View style = {styles.memberBox}>
-            <View style = {styles.nonCollapsedContainer}>
+    const animatedStyle = useAnimatedStyle(() => {
+        const animatedHeight = expanded ? withTiming(deviceHeight/6) : withTiming(0);
+        return {
+            height: animatedHeight,
+        }
+    })
+
+
+    return (
+        <View style={styles.wrap}>
+            <View style={styles.container}>
                 <Image 
-                    source={require(`${images}/react-logo.png`)}
-                    style = {styles.mBoxImg}
-                />
+                    source={require(`${images}/react-logo.png`)} 
+                    style={styles.image}/>
                 <Text style = {styles.mBoxName} numberOfLines={1}>
                     {memberName}
                 </Text>
-                <TouchableOpacity 
-                    onPress={async () => iconPressed()} 
-                    style = {styles.chevronContainerTouchable} >
-                    <Animated.View style = {animatedStyle}>
+                <TouchableOpacity onPress={onItemPress}>
+                    <Animated.View style = {animatedStyleRotation}>
                         <MaterialCommunityIcons
-                            name="chevron-right" 
-                            style={styles.chevronIcon} 
-                            size={deviceWidth*0.12} 
+                            name="chevron-right"
+                            color={Colors.darkBlue}
+                            size={50} 
                         />
                     </Animated.View>
                 </TouchableOpacity>
             </View>
-            <Animated.View style = {styles.collapsedContainer}>
-                <View style = {styles.collapsedRow}>
-                    <Text style = {styles.collapsedAtributte}>
-                        Nome:
-                    </Text>
-                    <Text style = {styles.collapsedFullName}>
-                        Bruna Ferreira Mello Reis
-                    </Text>
-                    <TouchableOpacity 
-                        style={styles.editContainerTouchable}>
-                        <MaterialCommunityIcons
-                                name="pencil-outline" 
-                                style={styles.editIcon} 
-                                size={deviceWidth*0.05} 
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style = {styles.collapsedEmailRow}>
-                    <View style = {styles.collapsedRow}>
-                        <Text style = {styles.collapsedAtributte}>
-                            Email:
-                        </Text>
-                        <Text style = {styles.collapsedFullName}>
-                            bruninhalinda07@gmail.com
-                        </Text>
+            <Animated.View style={animatedStyle}>
+                <View>
+                    <Animated.View style = {styles.collapsedContainer}>
+                        <View style = {styles.collapsedRow}>
+                            <Text style = {styles.collapsedAtributte}>
+                                Nome:
+                            </Text>
+                            <Text style = {styles.collapsedFullName}>
+                                Bruna Ferreira Mello Reis
+                            </Text>
+                            <TouchableOpacity 
+                                style={styles.editContainerTouchable}>
+                                <MaterialCommunityIcons
+                                        name="pencil-outline" 
+                                        style={styles.editIcon} 
+                                        size={deviceWidth*0.05} 
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style = {styles.collapsedEmailRow}>
+                            <View style = {styles.collapsedRow}>
+                                <Text style = {styles.collapsedAtributte}>
+                                    Email:
+                                </Text>
+                                <Text style = {styles.collapsedFullName}>
+                                    bruninhalinda07@gmail.com
+                                </Text>
+                                <TouchableOpacity 
+                                    style={styles.editContainerTouchable}>
+                                    <MaterialCommunityIcons
+                                            name="pencil-outline" 
+                                            style={styles.editIcon} 
+                                            size={deviceWidth*0.05} 
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style = {styles.collapsedLastRow}>
+                            <View style = {styles.collapsedRow}>
+                                <View style = {styles.collapsedAgeRow}>
+                                    <Text style = {styles.collapsedAtributte}>
+                                        Idade:
+                                    </Text>
+                                    <Text style = {styles.collapsedFullName} marginLeft = '10%'>
+                                        28
+                                    </Text>
+                                    <TouchableOpacity 
+                                        style={styles.editContainerTouchable}>
+                                        <MaterialCommunityIcons
+                                                name="pencil-outline" 
+                                                style={styles.editIcon} 
+                                                size={deviceWidth*0.05} 
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style = {styles.collapsedAgeRow}>
+                                    <Text style = {styles.collapsedAtributte}>
+                                        Matrícula:
+                                    </Text>
+                                    <Text style = {styles.collapsedFullName} marginLeft = '8%'>
+                                        202310623
+                                    </Text>
+                                    <TouchableOpacity 
+                                        style={styles.editContainerTouchable}>
+                                        <MaterialCommunityIcons
+                                                name="pencil-outline" 
+                                                style={styles.editIcon} 
+                                                size={deviceWidth*0.05} 
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
                         <TouchableOpacity 
-                            style={styles.editContainerTouchable}>
-                            <MaterialCommunityIcons
-                                    name="pencil-outline" 
-                                    style={styles.editIcon} 
-                                    size={deviceWidth*0.05} 
-                            />
+                            style={styles.btnDelete}>
+                            <Text style = {styles.btnText}>
+                                Excluir Perfil
+                            </Text>
                         </TouchableOpacity>
-                    </View>
+                    </Animated.View>
                 </View>
-                <View style = {styles.collapsedLastRow}>
-                    <View style = {styles.collapsedRow}>
-                        <View style = {styles.collapsedAgeRow}>
-                            <Text style = {styles.collapsedAtributte}>
-                                Idade:
-                            </Text>
-                            <Text style = {styles.collapsedFullName} marginLeft = '10%'>
-                                28
-                            </Text>
-                            <TouchableOpacity 
-                                style={styles.editContainerTouchable}>
-                                <MaterialCommunityIcons
-                                        name="pencil-outline" 
-                                        style={styles.editIcon} 
-                                        size={deviceWidth*0.05} 
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <View style = {styles.collapsedAgeRow}>
-                            <Text style = {styles.collapsedAtributte}>
-                                Matrícula:
-                            </Text>
-                            <Text style = {styles.collapsedFullName} marginLeft = '8%'>
-                                202310623
-                            </Text>
-                            <TouchableOpacity 
-                                style={styles.editContainerTouchable}>
-                                <MaterialCommunityIcons
-                                        name="pencil-outline" 
-                                        style={styles.editIcon} 
-                                        size={deviceWidth*0.05} 
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-                <TouchableOpacity 
-                    style={styles.btnDelete}>
-                    <Text style = {styles.btnText}>
-                        Excluir Perfil
-                    </Text>
-                </TouchableOpacity>
             </Animated.View>
-        </Animated.View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    memberBox: {
-        flex: 0,
-        width: deviceWidth*0.8,
+    wrap: {
+        width: '85%',
         flexDirection: 'collumn',
         justifyContent: 'center',
-        alignItems: 'center',
         marginVertical: deviceHeight/50,
-        backgroundColor: Colors.white,
+        backgroundColor: 'white',
         borderWidth: 3,
         borderColor: Colors.darkBlue,
         borderRadius: 20,
         padding: '2%'
     },
-    nonCollapsedContainer: {
-        height: '100%', // Tenq ser animado 100% -> 40%
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
+    container: { 
+        flexDirection: "row",
+        justifyContent: 'space-between',
         alignItems: 'center',
     },
-    mBoxImgContainer: {
+    image: { 
+        width: 100, 
+        height: 100, 
+        margin: 10, 
         borderRadius: 20,
-        marginHorizontal: '1%'
-    },
-    mBoxImg: {
-        aspectRatio: 1,
         resizeMode: 'contain',
+        aspectRatio: 1
     },
     mBoxName: {
         color: Colors.darkBlue,
         fontSize: deviceWidth*0.07,
         fontWeight: '600',
-        width: '45%',
-    },
-    chevronIcon: {
-        aspectRatio: 1,
-        color: Colors.darkBlue,
+        maxWidth: '55%',
+        marginRight: 'auto',
     },
     collapsedContainer: {
-        height: '60%', // Animar 0% -> 60%
+        height: '100%',
         width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-around',
@@ -209,15 +206,14 @@ const styles = StyleSheet.create({
     collapsedAtributte: {
         color: Colors.darkBlue,
         fontWeight: 'bold',
-        fontSize: deviceWidth*0.0375
+        fontSize: deviceWidth*0.04
     },
     editIcon: {
-        aspectRatio: 1,
         color: Colors.darkBlue,
     },
     collapsedFullName: {
         color: Colors.darkBlue,
-        fontSize: deviceWidth*0.0375,
+        fontSize: deviceWidth*0.04,
         marginRight: 'auto',
         marginLeft: '4%'
     },
@@ -228,8 +224,6 @@ const styles = StyleSheet.create({
     btnDelete: {
         backgroundColor: '#FAAAAA',
         borderRadius: 40,
-        paddingHorizontal: '5%',
-        paddingVertical: '0.5%',
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 'auto'
@@ -237,6 +231,8 @@ const styles = StyleSheet.create({
     btnText: {
         color: Colors.darkBlue,
         fontSize: deviceWidth*0.0375,
-        fontWeight: '500'
+        fontWeight: '500',
+        paddingHorizontal: '5%',
+        paddingVertical: '0.5%',
     }
-});
+  });
