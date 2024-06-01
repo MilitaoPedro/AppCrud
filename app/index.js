@@ -16,7 +16,7 @@ export default function HomeScreen() {
   return (
     <>
       <StatusBar translucent = {true} backgroundColor='transparent'/>
-      <Stack.Navigator initialRouteName="Members">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name = "Welcome" component = {Welcome} options={{headerShown: false}}/>
         <Stack.Screen name = "Login" component={Login} options={{headerShown: false}} />
         <Stack.Screen name = "SignUp" component={SignUp} options={{headerShown: false}} />

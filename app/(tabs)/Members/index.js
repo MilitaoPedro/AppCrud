@@ -15,6 +15,8 @@ import {
     FlatList
 } from 'react-native';
 
+import * as ImagePicker from 'expo-image-picker';
+
 import { StatusBar } from 'expo-status-bar';
 
 import Header from '@/components/header';
@@ -41,10 +43,10 @@ export default function Members( {navigation} ){
 
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    // if(!(currentUser != null)){
-    //     alert('É necessário estar logado no sistema para acessar esse recurso');
-    //     navigation.navigate('Login');
-    // }
+    if(!(currentUser != null)){
+        alert('É necessário estar logado no sistema para acessar esse recurso');
+        navigation.navigate('Login');
+    }
 
     function logout(){
         signOut(auth)
@@ -116,17 +118,16 @@ export default function Members( {navigation} ){
     };
 
     if (loading) {
-    return (
-        <View style={styles.container}>
-        <Text>Loading...</Text>
-        </View>
-    );
+        return (
+            <View style={styles.container}>
+            <Text>Loading...</Text>
+            </View>
+        );
     }
     return(
         <View style={styles.mainContainer}>
 
             <ModalAdd setIsModalVisible={setIsModalVisible} isOpen={isModalVisible} onAdd={handleAdd}/>
-            {/* <ModalEdit setIsEditModalVisible={setIsEditModalVisible} isOpen={isEditModalVisible} /> */}
 
             <StatusBar translucent backgroundColor={'#A2ADB2'}/>
             <ImageBackground style = {styles.backgroundImg} source={require(`${images}/lightBackgroundComp.png`)}>

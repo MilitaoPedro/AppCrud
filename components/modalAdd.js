@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
     ImageBackground, 
     View, 
@@ -22,6 +22,8 @@ import { StatusBar } from 'expo-status-bar';
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { FIREBASE_DB } from '@/FirebaseConfig';
+
+import * as ImagePicker from 'expo-image-picker';
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity} from 'react-native-gesture-handler'
@@ -46,6 +48,7 @@ const schema = yup.object({
     email: yup.string().email("Email invalido").required("Informe seu email"),
     idade: yup.string().required("Informe sua idade"),
     numMatricula: yup.string().required("Informe sua matrícula"),
+    image: yup.string().nullable()
 })
 
 export default function ModalAdd( { setIsModalVisible, isOpen, onAdd } ){
@@ -53,27 +56,69 @@ export default function ModalAdd( { setIsModalVisible, isOpen, onAdd } ){
     const [showSenha, setShowSenha] = useState(false);
     // const secureTextEntryBool = true;
 
-    const { control, handleSubmit, formState: {errors}} = useForm({
-        resolver: yupResolver(schema)
+    const [image, setImage] = useState(null);
+
+    const { control, handleSubmit, formState: {errors}, reset} = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            nome: '',
+            email: '',
+            idade: '',
+            numMatricula: '',
+            image: null,
+        }
     });
 
     const handleSignIn = async (data) => {
         try {
+            data.image = image;
             const updatedMembers = await addMember(data);
             onAdd(updatedMembers);
+            reset();
+            setImage(null)
         } catch (e) {
             console.error("Error adding member: ", e);
         }
     }
+
+    const pickImageAsync = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            quality: 1,
+        });
+    
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        } else {
+            alert('You did not select any image.');
+        }
+    };
+    
+    useEffect(() => {
+        if (!isOpen) {
+            reset();
+            setImage(null);
+        }
+    }, [isOpen, reset]);
 
     if(isOpen){
         return (
             <View style={styles.viewContainer}>
                 <View style={styles.wrap}>
                     <View style={styles.container}>
-                        <Image 
-                            source={require(`${images}/userImage.png`)} 
-                            style={styles.image}/>
+                        <Controller
+                            control={control}
+                            name="image"
+                            render={({field:{onChange, value}}) => (
+                                <TouchableOpacity
+                                    style={{marginRight: deviceWidth*0.1}}
+                                    onPress={pickImageAsync}>
+                                    <Image 
+                                        source={{ uri: image }} 
+                                        style={styles.image}/>
+                                </TouchableOpacity>
+                            )}
+                        />
                         <TouchableOpacity
                             style = {styles.closeIconTouchable}
                             onPress={() => setIsModalVisible(false)}>

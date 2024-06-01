@@ -13,6 +13,8 @@ import Dialog from 'react-native-dialog';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { deleteMember, updateMember } from "./memberService";
 
+import * as ImagePicker from 'expo-image-picker';
+
 const images = '@/assets/images';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
@@ -74,14 +76,35 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
         } catch (e) {
             console.error("Error updating member: ", e);
         }
-    }
+    };
+
+    const pickImageAsync = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            console.log(result);
+            const updatedFields = { image :  result.assets[0].uri};
+            const updatedMembers = await updateMember(memberId, updatedFields);
+            setNewFieldValue('');
+            setEditField(null);
+            onDelete(updatedMembers);
+        } else {
+            alert('Você não selecionou uma imagem');
+        }
+    };
 
     return (
         <View style={styles.wrap}>
             <View style={styles.container}>
-                <Image
-                    source={{ uri: imageURL }}
-                    style={styles.image} />
+                <TouchableOpacity
+                    onPress={pickImageAsync}>
+                    <Image
+                        source={{ uri: imageURL }}
+                        style={styles.image} />
+                </TouchableOpacity> 
                 <Text style={styles.mBoxName} numberOfLines={1}>
                     {memberName}
                 </Text>
