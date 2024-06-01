@@ -11,7 +11,7 @@ import {
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
 import Dialog from 'react-native-dialog';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { deleteMember } from "./memberService";
+import { deleteMember, updateMember } from "./memberService";
 
 const images = '@/assets/images';
 const deviceWidth = Dimensions.get('window').width;
@@ -22,10 +22,9 @@ const defaultName = 'Anônimo';
 export default function MemberBox({ onDelete, memberId, name, email, numMatricula, idade, imageURL }) {
     const memberName = name ? name : defaultName;
 
-    const [editName, setEditName] = useState(false);
-    const [editImage, setEditImage] = useState(false);
-    const [editEmail, setEditIdade] = useState(false);
-    const [editMatricula, setEditMatricula] = useState(false);
+    const [editField, setEditField] = useState(null);
+    const [newFieldValue, setNewFieldValue] = useState('');
+
     const [deleteMemberBox, setDeleteMemberBox] = useState(false);
 
     const [expanded, setExpanded] = useState(false);
@@ -52,7 +51,7 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
         };
     });
 
-    useEffect(() => {}, [editName]);
+    useEffect(() => {}, [editField]);
     useEffect(() => {}, [deleteMemberBox]);
 
     const handleDelete = async () => {
@@ -64,6 +63,18 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
             console.error("Error deleting member: ", e);
         }
     };
+
+    const handleUpdate = async () => {
+        try {
+            const updatedFields = { [editField]: newFieldValue };
+            const updatedMembers = await updateMember(memberId, updatedFields);
+            setNewFieldValue('');
+            setEditField(null);
+            onDelete(updatedMembers);
+        } catch (e) {
+            console.error("Error updating member: ", e);
+        }
+    }
 
     return (
         <View style={styles.wrap}>
@@ -96,7 +107,10 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
                             </Text>
                             <TouchableOpacity
                                 style={styles.editContainerTouchable}
-                                onPress={() => setEditName(true)}>
+                                onPress={() => {
+                                    setEditField('nome');
+                                    setNewFieldValue(name);
+                                }}>
                                 <MaterialCommunityIcons
                                     name="pencil-outline"
                                     style={styles.editIcon}
@@ -113,7 +127,11 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
                                     {email}
                                 </Text>
                                 <TouchableOpacity
-                                    style={styles.editContainerTouchable}>
+                                    style={styles.editContainerTouchable}
+                                    onPress={() => {
+                                        setEditField('email');
+                                        setNewFieldValue(email);
+                                    }}>
                                     <MaterialCommunityIcons
                                         name="pencil-outline"
                                         style={styles.editIcon}
@@ -132,7 +150,11 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
                                         {idade}
                                     </Text>
                                     <TouchableOpacity
-                                        style={styles.editContainerTouchable}>
+                                        style={styles.editContainerTouchable}
+                                        onPress={() => {
+                                            setEditField('idade');
+                                            setNewFieldValue(idade);
+                                        }}>
                                         <MaterialCommunityIcons
                                             name="pencil-outline"
                                             style={styles.editIcon}
@@ -148,7 +170,11 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
                                         {numMatricula}
                                     </Text>
                                     <TouchableOpacity
-                                        style={styles.editContainerTouchable}>
+                                        style={styles.editContainerTouchable}
+                                        onPress={() => {
+                                            setEditField('numMatricula');
+                                            setNewFieldValue(numMatricula);
+                                        }}>
                                         <MaterialCommunityIcons
                                             name="pencil-outline"
                                             style={styles.editIcon}
@@ -171,17 +197,28 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
 
             {/* Dialogs */}
 
-            <Dialog.Container visible={editName}>
-                <Dialog.Title>Account edit</Dialog.Title>
+            <Dialog.Container visible={editField !== null} contentStyle = {styles.dialogContainer}>
+                <Dialog.Title>
+                    <Text style={{color: Colors.darkBlue}}>Edição de membro</Text>
+                </Dialog.Title>
                 <Dialog.Description>
-                    Do you want to delete this account? You cannot undo this action.
+                    Digite o(a) novo(a) {editField} do membro:
                 </Dialog.Description>
-                <Dialog.Button label="Cancel" onPress={() => setEditName(false)} />
-                <Dialog.Button label="Delete" onPress={() => setEditName(false)} />
+                <Dialog.Input
+                    color = {Colors.darkBlue}
+                    placeholder={`Novo ${editField}`}
+                    value={newFieldValue}
+                    onChangeText={setNewFieldValue}
+                />
+                <Dialog.Button label="Cancel" onPress={() => setEditField(null)} />
+                <Dialog.Button label="Save" onPress={handleUpdate} />
             </Dialog.Container>
 
+
             <Dialog.Container visible={deleteMemberBox}>
-                <Dialog.Title>Deleção de conta</Dialog.Title>
+                <Dialog.Title> 
+                    <Text style={{color: Colors.darkBlue}}>Excluir Membro?</Text>
+                </Dialog.Title>
                 <Dialog.Description>
                     Você tem certeza que deseja deletar essa conta?
                 </Dialog.Description>
@@ -268,5 +305,10 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         paddingHorizontal: '5%',
         paddingVertical: '0.5%',
+    },
+    dialogContainer: {
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: Colors.darkBlue
     }
 });
