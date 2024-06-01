@@ -20,6 +20,9 @@ import { TextInput } from "react-native-paper";
 import { StatusBar } from 'expo-status-bar';
 
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
+import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { FIREBASE_DB } from '@/FirebaseConfig';
+
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity} from 'react-native-gesture-handler'
 import { ZoomInDown } from "react-native-reanimated";
@@ -31,6 +34,7 @@ import MemberBox from '@/components/memberBox';
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
 
+import { addMember } from './memberService'
 
 const images = '@/assets/images';
 
@@ -44,7 +48,7 @@ const schema = yup.object({
     numMatricula: yup.string().required("Informe sua matrícula"),
 })
 
-export default function ModalAdd( { setIsModalVisible, isOpen } ){
+export default function ModalAdd( { setIsModalVisible, isOpen, onAdd } ){
 
     const [showSenha, setShowSenha] = useState(false);
     // const secureTextEntryBool = true;
@@ -53,8 +57,13 @@ export default function ModalAdd( { setIsModalVisible, isOpen } ){
         resolver: yupResolver(schema)
     });
 
-    const handleSignIn = async(data) => {
-        alert('Submited')
+    const handleSignIn = async (data) => {
+        try {
+            const updatedMembers = await addMember(data);
+            onAdd(updatedMembers);
+        } catch (e) {
+            console.error("Error adding member: ", e);
+        }
     }
 
     if(isOpen){
@@ -259,6 +268,7 @@ const styles = StyleSheet.create({
         zIndex: 1000,
     },
     wrap: {
+        paddingTop: '5%',
         width: '85%',
         flexDirection: 'collumn',
         justifyContent: 'center',
@@ -267,17 +277,17 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: Colors.darkBlue,
         borderRadius: 20,
-        padding: '2%'
+        padding: '2%',
     },
     container: { 
         flexDirection: "row",
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: '5%'
     },
     image: { 
         width: deviceWidth/4, 
         height: deviceWidth/4, 
-        marginTop: 10, 
         borderRadius: 60,
         resizeMode: 'contain',
         aspectRatio: 1,
@@ -341,7 +351,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 'auto'
+        marginHorizontal: 'auto',
     },
     btnText: {
         color: 'white',

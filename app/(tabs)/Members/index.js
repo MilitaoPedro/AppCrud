@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { 
     ImageBackground, 
     View, 
@@ -11,17 +11,21 @@ import {
     BackHandler, 
     Alert,
     Image,
-    Button
+    Button,
+    FlatList
 } from 'react-native';
 
 import { StatusBar } from 'expo-status-bar';
 
 import Header from '@/components/header';
 import MemberBox from '@/components/memberBox';
-import ModalAdd from '@/components/modalAdd'
+import ModalAdd from '@/components/modalAdd';
 
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
+import { FIREBASE_DB } from '@/FirebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 import { signOut } from "firebase/auth";
+
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity} from 'react-native-gesture-handler'
 
@@ -80,17 +84,56 @@ export default function Members( {navigation} ){
 
     BackHandler.addEventListener("hardwareBackPress", handleBackPress);
 
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(FIREBASE_DB, 'membros'));
+                const items = [];
+                querySnapshot.forEach((doc) => {
+                    items.push({ id: doc.id, ...doc.data() });
+                });
+                setData(items);
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const handleAdd = (updatedMembers) => {
+        setData(updatedMembers);
+        setIsModalVisible(false);
+    };
+
+    const handleDelete = (updatedMembers) => {
+        setData(updatedMembers);
+    };
+
+    if (loading) {
+    return (
+        <View style={styles.container}>
+        <Text>Loading...</Text>
+        </View>
+    );
+    }
     return(
         <View style={styles.mainContainer}>
 
-            <ModalAdd setIsModalVisible={setIsModalVisible} isOpen={isModalVisible}></ModalAdd>
+            <ModalAdd setIsModalVisible={setIsModalVisible} isOpen={isModalVisible} onAdd={handleAdd}/>
+            {/* <ModalEdit setIsEditModalVisible={setIsEditModalVisible} isOpen={isEditModalVisible} /> */}
 
             <StatusBar translucent backgroundColor={'#A2ADB2'}/>
             <ImageBackground style = {styles.backgroundImg} source={require(`${images}/lightBackgroundComp.png`)}>
                 <View style={styles.screenContainer}>
                     <Header navigation={navigation}/>
                     <View style = {styles.screenView}>
-                        <ScrollView contentContainerStyle = {styles.membrosContainer}>
+                        <View style = {styles.membrosContainer}>
                             <View style={styles.memberTextIconView}>
                                 <Text style = {styles.title}>
                                     MEMBROS
@@ -105,16 +148,23 @@ export default function Members( {navigation} ){
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <MemberBox/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                            <MemberBox name = "Gabrielaaaaaaaaaaaaaa"/>
-                        </ScrollView> 
+                            <FlatList
+                                data={data}
+                                contentContainerStyle = {styles.flatList}
+                                keyExtractor={(item) => item.id}
+                                renderItem={({ item }) => (
+                                    <MemberBox
+                                        onDelete={handleDelete}
+                                        memberId={item.id}
+                                        name={item.nome}
+                                        email={item.email}
+                                        imageURL={item.image}
+                                        idade={item.idade}
+                                        numMatricula={item.numMatricula}    
+                                    />
+                                )}
+                            />
+                        </View> 
                     </View>
                 </View>
             </ImageBackground>
@@ -146,6 +196,7 @@ const styles = StyleSheet.create({
     },
     screenView: {
         height: deviceHeight - (deviceHeight/9),
+        width: deviceWidth
     },
     memberTextIconView: {
         width: '80%',
@@ -154,13 +205,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     membrosContainer: {
+        width: '100%',
         justifyContent: 'space-around',
         alignItems: 'center',
-    }, 
+    },
+    flatList: {
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
     title: {
         color: Colors.darkBlue,
         fontSize: deviceWidth*0.08,
         fontWeight: '600',
         padding: '5%'
-    }
+    },
+    image: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 10,
+    },
 });
