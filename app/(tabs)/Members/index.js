@@ -7,15 +7,10 @@ import {
     Text, 
     Dimensions, 
     StyleSheet, 
-    ScrollView, 
     BackHandler, 
     Alert,
-    Image,
-    Button,
     FlatList
 } from 'react-native';
-
-import * as ImagePicker from 'expo-image-picker';
 
 import { StatusBar } from 'expo-status-bar';
 

@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 
-import React, {useRef, useEffect} from "react";
+import React from "react";
 import { View, StyleSheet, ImageBackground, Image, Dimensions, StatusBar, Text } from 'react-native';
 import { TouchableOpacity } from "react-native-gesture-handler";
 

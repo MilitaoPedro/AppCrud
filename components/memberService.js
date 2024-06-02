@@ -1,8 +1,5 @@
-import { FIREBASE_AUTH } from "@/FirebaseConfig";
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { FIREBASE_DB, FIREBASE_STORAGE } from '@/FirebaseConfig';
-import * as ImagePicker from 'expo-image-picker';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { FIREBASE_DB } from '@/FirebaseConfig';
 
 export const addMember = async (member) => {
     try {

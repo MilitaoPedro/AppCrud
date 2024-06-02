@@ -2,36 +2,20 @@ import { Colors } from "@/constants/Colors";
 
 import React, { useState, useEffect } from "react";
 import { 
-    ImageBackground, 
     View, 
     Text, 
     Dimensions, 
     StyleSheet, 
-    ScrollView, 
-    BackHandler, 
-    Alert,
-    Modal,
-    Button,
     Image,
 } from 'react-native';
 
 import { TextInput } from "react-native-paper";
-
-import { StatusBar } from 'expo-status-bar';
-
-import { FIREBASE_AUTH } from "@/FirebaseConfig";
-import { collection, addDoc, getDocs } from 'firebase/firestore';
-import { FIREBASE_DB } from '@/FirebaseConfig';
-
 import * as ImagePicker from 'expo-image-picker';
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity} from 'react-native-gesture-handler'
-import { ZoomInDown } from "react-native-reanimated";
 
 import { useForm, Controller } from 'react-hook-form';
-
-import MemberBox from '@/components/memberBox';
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
@@ -52,9 +36,6 @@ const schema = yup.object({
 })
 
 export default function ModalAdd( { setIsModalVisible, isOpen, onAdd } ){
-
-    const [showSenha, setShowSenha] = useState(false);
-    // const secureTextEntryBool = true;
 
     const [image, setImage] = useState(null);
 

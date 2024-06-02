@@ -49,7 +49,7 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
     });
 
     const animatedStyle = useAnimatedStyle(() => {
-        const animatedHeight = expanded ? withTiming(deviceHeight / 6) : withTiming(0);
+        const animatedHeight = expanded ? withTiming(deviceHeight/6) : withTiming(0);
         return {
             height: animatedHeight,
         };
