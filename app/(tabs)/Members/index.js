@@ -22,11 +22,14 @@ import { StatusBar } from 'expo-status-bar';
 import Header from '@/components/header';
 import MemberBox from '@/components/memberBox';
 import ModalAdd from '@/components/modalAdd';
+import LoadingPage from "@/components/loadingPage";
 
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
 import { FIREBASE_DB } from '@/FirebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import { signOut } from "firebase/auth";
+
+import Dialog from 'react-native-dialog';
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity} from 'react-native-gesture-handler'
@@ -42,45 +45,26 @@ export default function Members( {navigation} ){
     const currentUser = auth.currentUser;
 
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
 
     if(!(currentUser != null)){
-        alert('É necessário estar logado no sistema para acessar esse recurso');
+        Alert.alert("Acesso negado", "É necessário estar logado no sistema para acessar esse recurso");
         navigation.navigate('Login');
     }
 
     function logout(){
         signOut(auth)
             .then(() => {
-                alert('Você foi deslogado');
                 navigation.navigate('Login');
             })
             .catch((error) => {
                 const errorMessage = error.errorMessage;
-                alert(errorMessage);
+                console.log(errorMessage);
             });
     }
 
     function handleBackPress() {
-        Alert.alert(
-            'Sair',
-            'Deseja sair do aplicativo?',
-            [
-                {
-                    text: 'Cancel',
-                    onPress: () => {
-                        console.log('Cancel Pressed');
-                    },
-                    style: 'cancel',
-                },
-                {
-                    text: 'OK',
-                    onPress: () => logout(),
-                },
-            ],
-            {
-                cancelable: false,
-            },
-        )
+        setDialogLogoutVisible(true);
         return true;
     }
 
@@ -88,6 +72,8 @@ export default function Members( {navigation} ){
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() =>{}, [dialogLogoutVisible]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -119,9 +105,7 @@ export default function Members( {navigation} ){
 
     if (loading) {
         return (
-            <View style={styles.container}>
-            <Text>Loading...</Text>
-            </View>
+            <LoadingPage/>
         );
     }
     return(
@@ -169,6 +153,19 @@ export default function Members( {navigation} ){
                     </View>
                 </View>
             </ImageBackground>
+
+            {/* Dialog de logout chamado a partir do backPress*/}
+
+            <Dialog.Container visible={dialogLogoutVisible} contentStyle = {styles.dialogContainer}>
+                <Dialog.Title> 
+                    <Text style={{color: Colors.darkBlue}}>Deseja sair?</Text>
+                </Dialog.Title>
+                <Dialog.Description>
+                    Você será deslogado do aplicativo.
+                </Dialog.Description>
+                <Dialog.Button label="Cancelar" onPress={() => setDialogLogoutVisible(false)} />
+                <Dialog.Button label="Sair" color='red' onPress={logout} />
+            </Dialog.Container>
         </View>
     );
 }
@@ -185,9 +182,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'red',
         padding: 60
-    },
-    screenContainer: {
-        
     },
     addButton: {
         color: Colors.darkBlue,
@@ -226,4 +220,9 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         marginBottom: 10,
     },
+    dialogContainer: {
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: Colors.darkBlue
+    }
 });

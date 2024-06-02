@@ -1,12 +1,14 @@
 import { Colors } from "@/constants/Colors";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import { TextInput } from "react-native-paper";
 
 import { useForm, Controller } from 'react-hook-form';
+
+import Dialog from 'react-native-dialog';
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
@@ -29,27 +31,35 @@ export default function Login( {navigation} ){
     const auth = FIREBASE_AUTH;
 
     const [showSenha, setShowSenha] = useState(false);
-    // const secureTextEntryBool = true;
+    const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
 
-    const { control, handleSubmit, formState: {errors}} = useForm({
-        resolver: yupResolver(schema)
+    const { control, handleSubmit, formState: {errors}, reset} = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            email: '',
+            senha: ''
+        }
     });
 
     const handleSignIn = async(data) => {
         signInWithEmailAndPassword(auth, data.email, data.senha)
         .then((userCredential) => {
             const user = userCredential.user;
-            navigation.navigate('Members')
+            navigation.navigate('Members');
+            reset();
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            alert(errorMessage);
+            console.log(errorMessage);
+            setDialogLogoutVisible(true);
         })
     }
 
+    useEffect(() => {}, [dialogLogoutVisible]);
+
     return(
         <View style={styles.backgroundContainer}>
-            <StatusBar backgroundColor={Colors.darkBlue} />
+            <StatusBar hidden backgroundColor={Colors.darkBlue} />
             <View style={styles.imageContainer}>
                 <Image 
                     source={require(`${images}/compLogo.png`)}
@@ -100,9 +110,18 @@ export default function Login( {navigation} ){
                                     autoCapitalize="none"
                                     onChangeText={onChange}
                                     value={value}
-                                    secureTextEntry = {true}
+                                    secureTextEntry = {!(showSenha)}
                                     style = {styles.textInput}
-                                    theme={{colors: 
+                                    right = {
+                                        <TextInput.Icon 
+                                            size={17}
+                                            style={{opacity: 0.5}}
+                                            icon = {showSenha ? 'eye' : 'eye-off'} 
+                                            color={Colors.darkBlue}
+                                            onPress={() => setShowSenha(!showSenha)}
+                                        />
+                                    }
+                                    theme = {{colors: 
                                         { 
                                             onSurfaceVariant: errors.senha? '#faa6a0' : Colors.gray
                                         }}}  
@@ -140,6 +159,18 @@ export default function Login( {navigation} ){
                     </Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Dialog de erro de credencial*/}
+
+            <Dialog.Container visible={dialogLogoutVisible} contentStyle = {styles.dialogContainer}>
+                <Dialog.Title> 
+                    <Text style={{color: 'red'}}>Credenciais inválidas</Text>
+                </Dialog.Title>
+                <Dialog.Description>
+                    Email e/ou senha incorretos
+                </Dialog.Description>
+                <Dialog.Button label="Ok" onPress={() => setDialogLogoutVisible(false)} />
+            </Dialog.Container>
 
         </View>
     )
@@ -232,5 +263,10 @@ const styles = StyleSheet.create({
         width: '90%',
         alignSelf: 'center',
         color: '#f25a4e',
+    },
+    dialogContainer: {
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: 'red'
     }
 });

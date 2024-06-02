@@ -1,12 +1,14 @@
 import { Colors } from "@/constants/Colors";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import { TextInput } from "react-native-paper";
 
 import { useForm, Controller } from 'react-hook-form';
+
+import Dialog from 'react-native-dialog';
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
@@ -34,20 +36,33 @@ export default function SignUp( {navigation} ){
 
     const auth = FIREBASE_AUTH;
 
-    const { control, handleSubmit, formState: {errors}} = useForm({
-        resolver: yupResolver(schema)
+    const { control, handleSubmit, formState: {errors}, reset} = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            email: '',
+            senha: '',
+            confirmSenha: ''
+        }
     });
 
     function handleSignIn(data){
         createUserWithEmailAndPassword(auth, data.email, data.senha, data.confirmSenha)
         .then((UserCredential) => {
             const user = UserCredential.user;
-            alert("Usuário registrado com sucesso");
-            navigation.navigate('Login');
+            setDialogLogoutVisible(true);
+            reset();
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorMessage);
         })
     }
 
-    const secureTextEntryBool = true;
+    const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
+    const [showSenha, setShowSenha] = useState(false);
+    const [showConfirmSenha, setShowConfirmSenha] = useState(false);
+
+    useEffect(() => {}, [dialogLogoutVisible]);
 
     return(
         <View style={styles.backgroundContainer}>
@@ -97,9 +112,18 @@ export default function SignUp( {navigation} ){
                                     autoCapitalize="none"
                                     onChangeText={onChange}
                                     value={value}
-                                    secureTextEntry = {secureTextEntryBool}
+                                    secureTextEntry = {!(showSenha)}
                                     style = {styles.textInput} 
-                                    theme={{colors: { onSurfaceVariant: errors.senha? '#faa6a0' : Colors.gray}}}  
+                                    theme={{colors: { onSurfaceVariant: errors.senha? '#faa6a0' : Colors.gray}}} 
+                                    right = {
+                                        <TextInput.Icon 
+                                            size={17}
+                                            style={{opacity: 0.5}}
+                                            icon = {showSenha ? 'eye' : 'eye-off'} 
+                                            color={Colors.darkBlue}
+                                            onPress={() => setShowSenha(!showSenha)}
+                                        />
+                                    }
                                     activeUnderlineColor = {
                                         errors.senha ? 'red' : Colors.lightBlue
                                     } 
@@ -120,8 +144,18 @@ export default function SignUp( {navigation} ){
                                 <TextInput
                                     autoCapitalize="none"
                                     onChangeText={onChange}
+                                    secureTextEntry = {!(showConfirmSenha)}
                                     value={value}
-                                    style = {styles.textInput} 
+                                    style = {styles.textInput}
+                                    right = {
+                                        <TextInput.Icon 
+                                            size={17}
+                                            style={{opacity: 0.5}}
+                                            icon = {showConfirmSenha ? 'eye' : 'eye-off'} 
+                                            color={Colors.darkBlue}
+                                            onPress={() => setShowConfirmSenha(!showConfirmSenha)}
+                                        />
+                                    }  
                                     theme={{colors: { onSurfaceVariant: errors.confirmSenha? '#faa6a0' : Colors.gray}}} 
                                     activeUnderlineColor = {
                                         errors.confirmSenha ? 'red' : Colors.lightBlue
@@ -152,6 +186,18 @@ export default function SignUp( {navigation} ){
                     />
                 </TouchableOpacity>
             </View>
+
+            {/* Dialog de usuário criado com sucesso*/}
+
+            <Dialog.Container visible={dialogLogoutVisible} contentStyle = {styles.dialogContainer}>
+                <Dialog.Title> 
+                    <Text style={{color: Colors.darkBlue}}>Sucesso</Text>
+                </Dialog.Title>
+                <Dialog.Description>
+                    O novo usuário foi cadastrado com sucesso
+                </Dialog.Description>
+                <Dialog.Button label="Ok" onPress={() => navigation.navigate('Login')} />
+            </Dialog.Container>
 
         </View>
     )
@@ -249,4 +295,9 @@ const styles = StyleSheet.create({
         color: Colors.white,
         fontSize: deviceWidth*0.035
     },
+    dialogContainer: {
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: Colors.darkBlue
+    }
 });

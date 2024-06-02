@@ -1,9 +1,11 @@
 import { Colors } from "@/constants/Colors";
 
-import React from "react";
-import { View, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Dimensions, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
 import { signOut } from "firebase/auth";
+
+import Dialog from 'react-native-dialog';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -18,17 +20,20 @@ let headerFixed = false;
 export default function Header( {navigation} ){
     const auth = FIREBASE_AUTH;
 
+    const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
+
     function logout(){
         signOut(auth)
             .then(() => {
-                alert('Você foi deslogado');
                 navigation.navigate('Login');
             })
             .catch((error) => {
                 const errorMessage = error.errorMessage;
-                alert(errorMessage);
+                console.log(errorMessage);
             });
     }
+
+    useEffect(() => {}, [dialogLogoutVisible]);
 
     return(
         <View style={styles.header}>
@@ -38,9 +43,22 @@ export default function Header( {navigation} ){
                     style = {styles.imageStyle}
                 />
             </View>
-            <TouchableOpacity onPress={logout} title = "Sign Out">
+            <TouchableOpacity onPress={() => setDialogLogoutVisible(true)} title = "Sign Out">
                 <MaterialCommunityIcons name="logout" style={styles.icon} size={55} />
             </TouchableOpacity>
+
+            {/* Dialog de logout*/}
+
+            <Dialog.Container visible={dialogLogoutVisible} contentStyle = {styles.dialogContainer}>
+                <Dialog.Title> 
+                    <Text style={{color: Colors.darkBlue}}>Deseja sair?</Text>
+                </Dialog.Title>
+                <Dialog.Description>
+                    Você será deslogado do aplicativo.
+                </Dialog.Description>
+                <Dialog.Button label="Cancelar" onPress={() => setDialogLogoutVisible(false)} />
+                <Dialog.Button label="Sair" color='red' onPress={logout} />
+            </Dialog.Container>
         </View>
     );
 }
@@ -62,5 +80,10 @@ const styles = StyleSheet.create({
     },
     icon: {
         alignSelf: 'center'
+    },
+    dialogContainer: {
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: Colors.darkBlue
     }
 });

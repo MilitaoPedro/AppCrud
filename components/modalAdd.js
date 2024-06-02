@@ -89,8 +89,6 @@ export default function ModalAdd( { setIsModalVisible, isOpen, onAdd } ){
     
         if (!result.canceled) {
             setImage(result.assets[0].uri);
-        } else {
-            alert('You did not select any image.');
         }
     };
     

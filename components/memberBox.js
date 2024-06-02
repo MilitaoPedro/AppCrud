@@ -8,9 +8,11 @@ import {
     Image,
     TouchableOpacity
 } from 'react-native';
+
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
 import Dialog from 'react-native-dialog';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 import { deleteMember, updateMember } from "./memberService";
 
 import * as ImagePicker from 'expo-image-picker';
@@ -91,8 +93,6 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
             setNewFieldValue('');
             setEditField(null);
             onDelete(updatedMembers);
-        } else {
-            alert('Você não selecionou uma imagem');
         }
     };
 
@@ -218,7 +218,7 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
                 </View>
             </Animated.View>
 
-            {/* Dialogs */}
+            {/* Dialogs de edição e exclusão de membros */}
 
             <Dialog.Container visible={editField !== null} contentStyle = {styles.dialogContainer}>
                 <Dialog.Title>
@@ -238,15 +238,15 @@ export default function MemberBox({ onDelete, memberId, name, email, numMatricul
             </Dialog.Container>
 
 
-            <Dialog.Container visible={deleteMemberBox}>
+            <Dialog.Container visible={deleteMemberBox} contentStyle = {styles.dialogContainer}>
                 <Dialog.Title> 
                     <Text style={{color: Colors.darkBlue}}>Excluir Membro?</Text>
                 </Dialog.Title>
                 <Dialog.Description>
-                    Você tem certeza que deseja deletar essa conta?
+                    Você tem certeza que deseja deletar esse membro?
                 </Dialog.Description>
                 <Dialog.Button label="Cancelar" onPress={() => setDeleteMemberBox(false)} />
-                <Dialog.Button label="Deletar" onPress={handleDelete} />
+                <Dialog.Button label="Deletar" color='red' onPress={handleDelete} />
             </Dialog.Container>
         </View>
     );

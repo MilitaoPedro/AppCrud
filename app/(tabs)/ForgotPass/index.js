@@ -1,17 +1,27 @@
 import { Colors } from "@/constants/Colors";
 
-import React, { useState } from "react";
-import { View, Text, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { 
+    View, 
+    Text, 
+    Dimensions, 
+    StyleSheet, 
+    Image, 
+    TouchableOpacity
+} from 'react-native';
+
 import { StatusBar } from 'expo-status-bar';
 
 import { TextInput } from "react-native-paper";
 
 import { useForm, Controller } from 'react-hook-form';
 
+import Dialog from 'react-native-dialog';
+
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
-import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -26,9 +36,14 @@ const schema = yup.object({
         .required("Informe seu email"),
 });
 
-export default function ForgetPass( {navigation} ){
+export default function ForgetPass( { navigation } ){
 
     const auth = FIREBASE_AUTH;
+
+    const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
+    const [emailEnvio, setEmailEnvio] = useState('');
+
+    useEffect(() => {}, [dialogLogoutVisible]);
 
     const { control, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(schema)
@@ -37,15 +52,14 @@ export default function ForgetPass( {navigation} ){
     function handleSignIn(data){
         sendPasswordResetEmail(auth, data.email)
         .then(() => {
-            alert(`Foi enviado um email para ${data.email}. Verifique sua caixa e-mail`);
+            setEmailEnvio(data.email);
+            setDialogLogoutVisible(true);
         })
         .catch((error) => {
             const errorMessage = error.message;
-            alert(`Alguma coisa não ocorreu como esperado. ${errorMessage}. Tente novamente ou volte a página de Login`);
+            Alert.alert("Opss", `Alguma coisa não ocorreu como esperado. ${errorMessage}. Tente novamente ou volte a página de Login`);
         });
     }
-
-    const secureTextEntryBool = true;
 
     return(
         <View style={styles.backgroundContainer}>
@@ -116,6 +130,21 @@ export default function ForgetPass( {navigation} ){
                 </TouchableOpacity>
             </View>
 
+            {/* Dialog de logout*/}
+
+            <Dialog.Container visible={dialogLogoutVisible} contentStyle = {styles.dialogContainer}>
+                <Dialog.Title> 
+                    <Text style={{color: Colors.darkBlue}}>E-mail enviado</Text>
+                </Dialog.Title>
+                <Dialog.Description>
+                    Foi enviado um email para {emailEnvio}. Verifique sua caixa e-mail
+                </Dialog.Description>
+                <Dialog.Button label="Ok" onPress={() => {
+                    setDialogLogoutVisible(false);
+                    setEmailEnvio('');
+                    navigation.navigate('Login');
+                    }} />
+            </Dialog.Container>
         </View>
     )
 }
@@ -225,4 +254,9 @@ const styles = StyleSheet.create({
         color: Colors.white,
         fontSize: deviceWidth*0.035
     },
+    dialogContainer: {
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: Colors.darkBlue
+    }
 });
