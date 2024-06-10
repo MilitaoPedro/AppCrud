@@ -22,7 +22,7 @@ Será possível abrir o aplicativo com as seguintes opções:
 - [Compilação de desenvolvimento](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Emulador Android](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [Simulador iOS](https://docs.expo.dev/workflow/ios-simulator/) (Não Recomendado)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo (Recomendado)
+- [Expo Go](https://expo.dev/go) (Recomendado)
 
 ## Funcionalidades
    O aplicativo possui integração com API com firebase, navegação entre telas com o React Navigation e validação de formulários utilizando o yup. O que permite as seguintes funcionalidades: 
