@@ -34,7 +34,7 @@ Será possível abrir o aplicativo com as seguintes opções:
 ## Telas do Aplicativo
  - **Welcome Page**
 
-    ![WelcomePage](https://github.com/MilitaoPedro/MembersApp/assets/102882308/38c788f4-5503-40ca-b723-58e170e2b27e)
+   ![WelcomePage](https://github.com/MilitaoPedro/MembersApp/assets/102882308/09c259cf-35fb-461d-a0e8-b1f7c4caf68d)
 
    > Primeira tela do Aplicativo 
 
