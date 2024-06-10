@@ -108,7 +108,7 @@ export default function Members( {navigation} ){
 
             <ModalAdd setIsModalVisible={setIsModalVisible} isOpen={isModalVisible} onAdd={handleAdd}/>
 
-            <StatusBar translucent backgroundColor={'#A2ADB2'}/>
+            <StatusBar translucent = {true} backgroundColor='transparent'/>
             <ImageBackground style = {styles.backgroundImg} source={require(`${images}/lightBackgroundComp.png`)}>
                 <View style={styles.screenContainer}>
                     <Header navigation={navigation}/>

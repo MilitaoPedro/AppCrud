@@ -13,7 +13,7 @@ export default function Welcome( { navigation } ){
 
     return(
         <View style={styles.mainContainer}>
-            <StatusBar hidden backgroundColor={'#0E2B49'}/>
+            <StatusBar translucent = {true} backgroundColor={'#0E2B49'}/>
             <ImageBackground style = {styles.backgroundImg} source={require(`${images}/welcome.png`)}>
                 <View style = {styles.containerStyle}>
                     <Image 

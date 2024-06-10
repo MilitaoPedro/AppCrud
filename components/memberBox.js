@@ -17,7 +17,8 @@ import { deleteMember, updateMember } from "./memberService";
 
 import * as ImagePicker from 'expo-image-picker';
 
-const images = '@/assets/images';
+const images = '@/assets/images'; 
+
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 

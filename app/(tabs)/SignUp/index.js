@@ -66,7 +66,7 @@ export default function SignUp( {navigation} ){
 
     return(
         <View style={styles.backgroundContainer}>
-            <StatusBar backgroundColor={Colors.darkBlue} />
+            <StatusBar translucent = {true} backgroundColor={Colors.darkBlue} />
             <View style={styles.imageContainer}>
                 <Image 
                     source={require(`${images}/compLogo.png`)}

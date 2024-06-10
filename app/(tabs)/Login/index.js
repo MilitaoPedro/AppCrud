@@ -26,8 +26,6 @@ const schema = yup.object({
 })
 
 export default function Login( {navigation} ){
-
-    const [loading, setLoading] = useState(false);
     const auth = FIREBASE_AUTH;
 
     const [showSenha, setShowSenha] = useState(false);
@@ -59,7 +57,7 @@ export default function Login( {navigation} ){
 
     return(
         <View style={styles.backgroundContainer}>
-            <StatusBar hidden backgroundColor={Colors.darkBlue} />
+            <StatusBar translucent = {true} backgroundColor={Colors.darkBlue} />
             <View style={styles.imageContainer}>
                 <Image 
                     source={require(`${images}/compLogo.png`)}
