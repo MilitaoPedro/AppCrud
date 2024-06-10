@@ -32,7 +32,7 @@ Será possível abrir o aplicativo com as seguintes opções:
    - Edição de membro em tempo real
    - Remoção de membro em tempo real
 ## Telas do Aplicativo
-Welcome Page
-![WelcomePage](https://github.com/MilitaoPedro/MembersApp/assets/102882308/b9829f41-d29e-43b1-ae95-792ca1659c91)
+ - Welcome Page
+   ![WelcomePage](https://github.com/MilitaoPedro/MembersApp/assets/102882308/38c788f4-5503-40ca-b723-58e170e2b27e)
    Primeira tela do Aplicativo 
 
