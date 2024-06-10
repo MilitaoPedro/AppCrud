@@ -36,5 +36,5 @@ Será possível abrir o aplicativo com as seguintes opções:
 
     ![WelcomePage](https://github.com/MilitaoPedro/MembersApp/assets/102882308/38c788f4-5503-40ca-b723-58e170e2b27e)
 
-   Primeira tela do Aplicativo 
+   > Primeira tela do Aplicativo 
 
