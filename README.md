@@ -1,50 +1,35 @@
-# Welcome to your Expo app 👋
+# Membros App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo desenvolvido em React-Native, com o intuito de realizar o cadastro, edição, remoção e listagem de membros.
 
-## Get started
+## Rodando o projeto
 
-1. Install dependencies
+1. Dependências necessárias
+   - Se faz essencial possuir o Node.js v20.12.2+ instalado em sua máquina [Link para download](https://nodejs.org/en)
+   - O App foi criado utilizando o expo seguindo sua [documentação](https://docs.expo.dev/get-started/set-up-your-environment/)
 
+2. Rodando o aplicativo
+   Vá para a pasta onde o projeto foi instalado e então instale os pacotes com
    ```bash
-   npm install
+    npm install
    ```
-
-2. Start the app
-
+   Depois, inicie o projeto através do comando
    ```bash
     npx expo start
    ```
+Será possível abrir o aplicativo com as seguintes opções:
+   Escolha a mais apropriada para você
+- [Compilação de desenvolvimento](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Emulador Android](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [Simulador iOS](https://docs.expo.dev/workflow/ios-simulator/) (Não Recomendado)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo (Recomendado)
 
-In the output, you'll find options to open the app in a
+## Funcionalidades
+   O aplicativo possui integração com API com firebase, navegação entre telas com o React Navigation e validação de formulários utilizando o yup. O que permite as seguintes funcionalidades: 
+   - Login de usuário
+   - Cadastro de usuário (Com função esqueci minha senha)
+   - Adição de membro em tempo real
+   - Edição de membro em tempo real
+   - Remoção de membro em tempo real
+## Telas do Aplicativo
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
