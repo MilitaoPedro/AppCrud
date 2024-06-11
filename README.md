@@ -64,7 +64,7 @@ Será possível abrir o aplicativo com as seguintes opções:
    
 - **Página de listagem de membros**
 
-   https://github.com/MilitaoPedro/MembersApp/assets/102882308/4cd790c8-6366-4896-8231-81e50fae9735
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/f9b928d3-4246-47e7-a777-0d5064229704
 
    > Tela com todos os membros presentes no banco de dados. Cada membro possui Nome, Email, Idade, Matricula e Imagem de perfil (Opcional)
    > É possível realizar a edição, remoção e criação de novos membros nesta página
