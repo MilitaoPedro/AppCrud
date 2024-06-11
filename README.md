@@ -40,37 +40,37 @@ Será possível abrir o aplicativo com as seguintes opções:
 
 - **Login Page**
 
-   https://github.com/MilitaoPedro/MembersApp/assets/102882308/911bd359-877b-4f79-b0d6-f7464c1807d1
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/f85e606b-737d-4266-b829-7c11405c6269
 
    > Tela de login integrado com firebase e com validação de formulário
 
 - **Página de Cadastro**
 
-   https://github.com/MilitaoPedro/MembersApp/assets/102882308/911bd359-877b-4f79-b0d6-f7464c1807d1
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/bf383160-b5aa-4171-8702-37248ce9146b
 
    > Tela de login integrado com firebase e com validação de formulário
 
 - **Página de esqueci minha senha**
 
-   ![ForgotPass](https://github.com/MilitaoPedro/MembersApp/assets/102882308/0f5049d2-a329-4448-a244-bab82e3ad7bb)
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/0f5049d2-a329-4448-a244-bab82e3ad7bb
 
    > Tela de esqueci minha senha, integrada com firebase
    
 - **Página de carregamento**
 
-   ![LoadingPage](https://github.com/MilitaoPedro/MembersApp/assets/102882308/4611faed-bebe-433f-b66e-c155c47d86ab)
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/4611faed-bebe-433f-b66e-c155c47d86ab
 
    > Tela de loading que faz com que o usuário aguarde até todos os membros do banco de dados serem listados
    
 - **Página de listagem de membros**
 
-   ![MemberList](https://github.com/MilitaoPedro/MembersApp/assets/102882308/4cd790c8-6366-4896-8231-81e50fae9735)
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/4cd790c8-6366-4896-8231-81e50fae9735
 
    > Tela com todos os membros presentes no banco de dados. Cada membro possui Nome, Email, Idade, Matricula e Imagem de perfil (Opcional)
    > É possível realizar a edição, remoção e criação de novos membros nesta página
    
 - **Modal de adição de membro**
   
-   ![MemberAdd](https://github.com/MilitaoPedro/MembersApp/assets/102882308/f01e668f-c8bd-4f92-ac80-dd7bb1b5ed84)
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/f01e668f-c8bd-4f92-ac80-dd7bb1b5ed84
 
    > Modal responsável por adicionar um membro no banco de dados
