@@ -46,7 +46,7 @@ Será possível abrir o aplicativo com as seguintes opções:
 
 - **Página de Cadastro**
 
-   ![LoginPage](https://github.com/MilitaoPedro/MembersApp/assets/102882308/911bd359-877b-4f79-b0d6-f7464c1807d1)
+   https://github.com/MilitaoPedro/MembersApp/assets/102882308/911bd359-877b-4f79-b0d6-f7464c1807d1
 
    > Tela de login integrado com firebase e com validação de formulário
 
