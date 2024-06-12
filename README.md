@@ -26,7 +26,7 @@ Será possível abrir o aplicativo com as seguintes opções:
 - [Expo Go](https://expo.dev/go) (Recomendado)
 
 ## Funcionalidades
-   O aplicativo possui integração com API com firebase, navegação entre telas com o React Navigation e validação de formulários utilizando o yup. O que permite as seguintes funcionalidades: 
+   O aplicativo possui integração com API do firebase, navegação entre telas com o React Navigation e validação de formulários utilizando o yup. O que permite as seguintes funcionalidades: 
    - Login de usuário (Com função esqueci minha senha)
    - Cadastro de usuário 
    - Adição de membro em tempo real
